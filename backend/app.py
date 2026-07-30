@@ -19,8 +19,15 @@ sys.path.insert(0, os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'models'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'data'))
 
-from models.genetic_predictor import GeneticDiseasePredictor, train_and_save
+from models.genetic_predictor import GeneticDiseasePredictor
 from data.generate_dataset import DOENCAS, PARENTESCOS
+
+# Importar train_and_save apenas se pandas disponível (para treinamento)
+try:
+    from models.genetic_predictor import train_and_save
+    CAN_TRAIN = True
+except Exception:
+    CAN_TRAIN = False
 
 app = Flask(__name__, static_folder='../frontend')
 CORS(app)
@@ -44,11 +51,18 @@ def get_predictor():
             predictor.load_model(model_path)
             print("Modelo carregado do cache.")
         except Exception as e:
-            print(f"Erro ao carregar modelo: {e}. Retreinando...")
-            predictor = train_and_save()
+            print(f"Erro ao carregar modelo: {e}.")
+            if CAN_TRAIN:
+                print("Retreinando...")
+                predictor = train_and_save()
+            else:
+                raise RuntimeError("Modelo não pode ser carregado e pandas não disponível para retreinar.")
     else:
-        print("Modelo não encontrado. Treinando novo modelo...")
-        predictor = train_and_save()
+        if CAN_TRAIN:
+            print("Modelo não encontrado. Treinando novo modelo...")
+            predictor = train_and_save()
+        else:
+            raise RuntimeError("Modelo não encontrado e pandas não disponível para treinar.")
 
     return predictor
 

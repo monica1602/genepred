@@ -15,16 +15,27 @@ Features utilizadas:
 """
 
 import numpy as np
-import pandas as pd
 import pickle
 import os
+
+try:
+    import pandas as pd
+    HAS_PANDAS = True
+except ImportError:
+    HAS_PANDAS = False
+
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
-from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    roc_auc_score, mean_absolute_error, classification_report
-)
+
+try:
+    from sklearn.model_selection import train_test_split, cross_val_score
+    from sklearn.metrics import (
+        accuracy_score, precision_score, recall_score, f1_score,
+        roc_auc_score, mean_absolute_error, classification_report
+    )
+except ImportError:
+    pass
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -39,20 +50,20 @@ class GeneticDiseasePredictor:
 
     def __init__(self):
         self.classifier = RandomForestClassifier(
-            n_estimators=200,
-            max_depth=15,
-            min_samples_split=5,
-            min_samples_leaf=2,
+            n_estimators=50,
+            max_depth=10,
+            min_samples_split=10,
+            min_samples_leaf=4,
             random_state=42,
             class_weight='balanced',
             n_jobs=-1
         )
         self.regressor = GradientBoostingRegressor(
-            n_estimators=200,
-            max_depth=6,
-            learning_rate=0.1,
-            min_samples_split=5,
-            min_samples_leaf=3,
+            n_estimators=80,
+            max_depth=4,
+            learning_rate=0.15,
+            min_samples_split=10,
+            min_samples_leaf=5,
             random_state=42
         )
         self.label_encoders = {}
@@ -214,11 +225,8 @@ class GeneticDiseasePredictor:
         if not self.is_trained:
             raise ValueError("Modelo não treinado. Execute train() primeiro.")
 
-        # Converter entrada para DataFrame
-        df_input = pd.DataFrame([dados_entrada])
-
-        # Preparar features
-        X = self._prepare_features(df_input, fit=False)
+        # Preparar features sem pandas
+        X = self._prepare_single_input(dados_entrada)
 
         # Predição de classificação
         prob_classe = self.classifier.predict_proba(X)[0]
@@ -264,6 +272,57 @@ class GeneticDiseasePredictor:
         }
 
         return resultado
+
+    def _prepare_single_input(self, dados):
+        """Prepara um único input para predição sem usar pandas."""
+        categorical_cols = ['tipo_heranca', 'categoria_doenca']
+        numeric_cols = [
+            'grau_parentesco', 'compartilhamento_genetico', 'penetrancia',
+            'sexo_parente', 'idade_parente', 'idade_afetado',
+            'num_afetados_familia', 'tabagismo', 'alcoolismo',
+            'sedentarismo', 'obesidade', 'exposicao_quimicos',
+            'dieta_inadequada', 'estresse_cronico'
+        ]
+
+        features = []
+
+        # Colunas numéricas
+        for col in numeric_cols:
+            features.append(float(dados.get(col, 0)))
+
+        # Colunas categóricas encoded
+        for col in categorical_cols:
+            if col in self.label_encoders:
+                val = str(dados.get(col, ''))
+                known_classes = set(self.label_encoders[col].classes_)
+                if val not in known_classes:
+                    val = self.label_encoders[col].classes_[0]
+                encoded = self.label_encoders[col].transform([val])[0]
+                features.append(float(encoded))
+
+        # Feature engineering
+        idade_parente = float(dados.get('idade_parente', 0))
+        compartilhamento = float(dados.get('compartilhamento_genetico', 0))
+        num_afetados = float(dados.get('num_afetados_familia', 1))
+
+        risco_idade = idade_parente * compartilhamento
+        fatores_risco_total = sum([
+            float(dados.get('tabagismo', 0)),
+            float(dados.get('alcoolismo', 0)),
+            float(dados.get('sedentarismo', 0)),
+            float(dados.get('obesidade', 0)),
+            float(dados.get('exposicao_quimicos', 0)),
+            float(dados.get('dieta_inadequada', 0)),
+            float(dados.get('estresse_cronico', 0)),
+        ])
+        interacao_genetica_ambiente = compartilhamento * fatores_risco_total
+        familia_x_parentesco = num_afetados * compartilhamento
+
+        features.extend([risco_idade, fatores_risco_total, interacao_genetica_ambiente, familia_x_parentesco])
+
+        X = np.array([features])
+        X = self.scaler.transform(X)
+        return X
 
     def _gerar_recomendacoes(self, dados, prob, nivel_risco):
         """Gera recomendações baseadas no resultado."""
