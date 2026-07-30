@@ -11,6 +11,7 @@ Endpoints:
 import os
 import sys
 import json
+import numpy as np
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -21,13 +22,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'data'))
 
 from models.genetic_predictor import GeneticDiseasePredictor
 from data.generate_dataset import DOENCAS, PARENTESCOS
-
-# Importar train_and_save apenas se pandas disponível (para treinamento)
-try:
-    from models.genetic_predictor import train_and_save
-    CAN_TRAIN = True
-except Exception:
-    CAN_TRAIN = False
 
 app = Flask(__name__, static_folder='../frontend')
 CORS(app)
@@ -51,20 +45,160 @@ def get_predictor():
             predictor.load_model(model_path)
             print("Modelo carregado do cache.")
         except Exception as e:
-            print(f"Erro ao carregar modelo: {e}.")
-            if CAN_TRAIN:
-                print("Retreinando...")
-                predictor = train_and_save()
-            else:
-                raise RuntimeError("Modelo não pode ser carregado e pandas não disponível para retreinar.")
+            print(f"Erro ao carregar modelo: {e}. Treinando novo modelo sem pandas...")
+            predictor = train_without_pandas()
     else:
-        if CAN_TRAIN:
-            print("Modelo não encontrado. Treinando novo modelo...")
-            predictor = train_and_save()
-        else:
-            raise RuntimeError("Modelo não encontrado e pandas não disponível para treinar.")
+        print("Modelo não encontrado. Treinando novo modelo...")
+        predictor = train_without_pandas()
 
     return predictor
+
+
+def train_without_pandas():
+    """Treina o modelo sem depender de pandas, usando numpy puro."""
+    from data.generate_dataset import (
+        DOENCAS, PARENTESCOS, calcular_probabilidade_base,
+        gerar_fatores_ambientais, ajustar_probabilidade_por_fatores
+    )
+
+    np.random.seed(42)
+    n_amostras = 8000
+
+    # Gerar dados como listas
+    all_features = []
+    all_labels_class = []
+    all_labels_prob = []
+
+    doenca_ids = list(DOENCAS.keys())
+    parentesco_ids = list(PARENTESCOS.keys())
+    parentescos_femininos = ["mae", "filha", "irma", "avo_materna", "tia", "sobrinha", "prima", "meia_irma"]
+    parentescos_masculinos = ["pai", "filho", "irmao", "avo_paterno", "tio", "sobrinho", "primo", "meio_irmao"]
+
+    # Tipo heranca -> indice
+    tipos_heranca = sorted(set(d["tipo_heranca"] for d in DOENCAS.values()))
+    categorias = sorted(set(d["categoria"] for d in DOENCAS.values()))
+
+    for _ in range(n_amostras):
+        doenca_id = np.random.choice(doenca_ids)
+        doenca_info = DOENCAS[doenca_id]
+        parentesco_id = np.random.choice(parentesco_ids)
+        parentesco_info = PARENTESCOS[parentesco_id]
+
+        if parentesco_id in parentescos_femininos:
+            sexo_parente = 0
+        elif parentesco_id in parentescos_masculinos:
+            sexo_parente = 1
+        else:
+            sexo_parente = np.random.choice([0, 1])
+
+        idade_parente = np.random.randint(1, 85)
+        idade_afetado = np.random.randint(1, 85)
+        num_afetados = np.random.choice([1, 2, 3, 4, 5], p=[0.40, 0.30, 0.15, 0.10, 0.05])
+        fatores = gerar_fatores_ambientais()
+
+        sexo_str = "masculino" if sexo_parente == 1 else "feminino"
+        prob_base = calcular_probabilidade_base(doenca_info, parentesco_info, sexo_str)
+        prob_ajustada = ajustar_probabilidade_por_fatores(prob_base, fatores, doenca_info)
+        prob_ajustada = min(prob_ajustada * (1.0 + (num_afetados - 1) * 0.10), 0.99)
+
+        # Ajuste por idade
+        if doenca_id in ["huntington", "cancer_mama_brca1", "cancer_mama_brca2",
+                         "cancer_prostata", "melanoma_familiar", "sindrome_lynch",
+                         "alzheimer_familiar", "parkinson_familiar", "ela_familiar",
+                         "cancer_pancreas_hereditario", "cancer_estomago_difuso",
+                         "cancer_endometrio", "cancer_pulmao_hereditario",
+                         "cancer_bexiga_hereditario", "diabetes_tipo2_genetico",
+                         "hipercolesterolemia_familiar", "cardiomiopatia_hipertrofica",
+                         "esquizofrenia", "transtorno_bipolar",
+                         "artrite_reumatoide", "lupus", "esclerose_multipla"]:
+            if idade_parente < 20:
+                prob_ajustada *= 0.3
+            elif idade_parente < 40:
+                prob_ajustada *= 0.7
+            elif idade_parente >= 60:
+                prob_ajustada *= 1.1
+            prob_ajustada = min(prob_ajustada, 0.99)
+
+        desenvolve = 1 if np.random.random() < prob_ajustada else 0
+        prob_final = max(0.01, min(0.99, prob_ajustada + np.random.normal(0, 0.02)))
+
+        # Features numéricas
+        features = [
+            parentesco_info["grau"],
+            parentesco_info["compartilhamento_genetico"],
+            doenca_info["penetrancia"],
+            sexo_parente,
+            idade_parente,
+            idade_afetado,
+            num_afetados,
+            fatores["tabagismo"],
+            fatores["alcoolismo"],
+            fatores["sedentarismo"],
+            fatores["obesidade"],
+            fatores["exposicao_quimicos"],
+            fatores["dieta_inadequada"],
+            fatores["estresse_cronico"],
+            # Encoded categoricals
+            tipos_heranca.index(doenca_info["tipo_heranca"]),
+            categorias.index(doenca_info["categoria"]),
+            # Engineered features
+            idade_parente * parentesco_info["compartilhamento_genetico"],  # risco_idade
+            sum([fatores["tabagismo"], fatores["alcoolismo"], fatores["sedentarismo"],
+                 fatores["obesidade"], fatores["exposicao_quimicos"],
+                 fatores["dieta_inadequada"], fatores["estresse_cronico"]]),  # fatores_total
+            parentesco_info["compartilhamento_genetico"] * sum([
+                fatores["tabagismo"], fatores["alcoolismo"], fatores["sedentarismo"],
+                fatores["obesidade"], fatores["exposicao_quimicos"],
+                fatores["dieta_inadequada"], fatores["estresse_cronico"]]),  # interacao
+            num_afetados * parentesco_info["compartilhamento_genetico"],  # familia_x_parentesco
+        ]
+
+        all_features.append(features)
+        all_labels_class.append(desenvolve)
+        all_labels_prob.append(prob_final)
+
+    X = np.array(all_features, dtype=np.float64)
+    y_class = np.array(all_labels_class)
+    y_prob = np.array(all_labels_prob)
+
+    # Criar e treinar predictor
+    pred = GeneticDiseasePredictor()
+
+    # Configurar label encoders manualmente
+    from sklearn.preprocessing import LabelEncoder
+    le_heranca = LabelEncoder()
+    le_heranca.classes_ = np.array(tipos_heranca)
+    le_cat = LabelEncoder()
+    le_cat.classes_ = np.array(categorias)
+    pred.label_encoders = {'tipo_heranca': le_heranca, 'categoria_doenca': le_cat}
+
+    # Feature columns
+    pred.feature_columns = [
+        'grau_parentesco', 'compartilhamento_genetico', 'penetrancia',
+        'sexo_parente', 'idade_parente', 'idade_afetado',
+        'num_afetados_familia', 'tabagismo', 'alcoolismo',
+        'sedentarismo', 'obesidade', 'exposicao_quimicos',
+        'dieta_inadequada', 'estresse_cronico',
+        'tipo_heranca_encoded', 'categoria_doenca_encoded',
+        'risco_idade', 'fatores_risco_total', 'interacao_genetica_ambiente', 'familia_x_parentesco'
+    ]
+
+    # Fit scaler
+    pred.scaler.fit(X)
+    X_scaled = pred.scaler.transform(X)
+
+    # Treinar modelos
+    pred.classifier.fit(X_scaled, y_class)
+    pred.regressor.fit(X_scaled, y_prob)
+    pred.is_trained = True
+    pred.metrics = {"info": "Treinado sem pandas no servidor"}
+
+    # Salvar para cache
+    model_path = os.path.join(os.path.dirname(__file__), 'models', 'trained_model.pkl')
+    pred.save_model(model_path)
+
+    print("Modelo treinado e salvo com sucesso (sem pandas)!")
+    return pred
 
 
 @app.route('/')
