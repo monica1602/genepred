@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenePred - Sistema de Predição de Doenças Genéticas</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-dna"></i>
+                <h1>GenePred</h1>
+            </div>
+            <p class="subtitle">Sistema de Predição de Doenças Genéticas com Machine Learning</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Aviso importante -->
+        <div class="disclaimer">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>
+                <strong>Aviso Importante:</strong> Este sistema é uma ferramenta educacional e de estimativa baseada em modelos estatísticos.
+                Não substitui aconselhamento genético profissional nem diagnóstico médico.
+                Sempre consulte um geneticista clínico para avaliação personalizada.
+            </p>
+        </div>
+
+        <!-- Formulário principal -->
+        <div class="form-section">
+            <h2><i class="fas fa-clipboard-list"></i> Dados para Análise</h2>
+
+            <form id="prediction-form">
+                <!-- Seção: Doença -->
+                <fieldset class="form-group">
+                    <legend><i class="fas fa-virus"></i> Doença Identificada no Parente Afetado</legend>
+
+                    <div class="form-row">
+                        <div class="form-field full-width">
+                            <label for="doenca_id">Doença Genética *</label>
+                            <select id="doenca_id" name="doenca_id" required>
+                                <option value="">Selecione a doença...</option>
+                            </select>
+                            <div class="disease-info" id="disease-info-box" style="display:none;">
+                                <span class="badge" id="disease-category"></span>
+                                <span class="badge" id="disease-inheritance"></span>
+                                <span class="badge" id="disease-penetrance"></span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Seção: Parente Afetado -->
+                <fieldset class="form-group">
+                    <legend><i class="fas fa-user-injured"></i> Dados do Parente Afetado</legend>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="idade_afetado">Idade do Afetado *</label>
+                            <input type="number" id="idade_afetado" name="idade_afetado"
+                                   min="0" max="120" required placeholder="Ex: 55">
+                        </div>
+                        <div class="form-field">
+                            <label for="num_afetados_familia">Nº de Afetados na Família *</label>
+                            <input type="number" id="num_afetados_familia" name="num_afetados_familia"
+                                   min="1" max="20" value="1" required>
+                            <small>Inclua todos os parentes diagnosticados com a mesma doença</small>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Seção: Parente a ser Avaliado -->
+                <fieldset class="form-group">
+                    <legend><i class="fas fa-user"></i> Dados do Parente a ser Avaliado</legend>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="parentesco">Parentesco com o Afetado *</label>
+                            <select id="parentesco" name="parentesco" required>
+                                <option value="">Selecione o parentesco...</option>
+                            </select>
+                            <div class="relationship-info" id="relationship-info-box" style="display:none;">
+                                <span class="badge" id="rel-degree"></span>
+                                <span class="badge" id="rel-sharing"></span>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="sexo_parente">Sexo *</label>
+                            <select id="sexo_parente" name="sexo_parente" required>
+                                <option value="">Selecione...</option>
+                                <option value="1">Masculino</option>
+                                <option value="0">Feminino</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="idade_parente">Idade *</label>
+                            <input type="number" id="idade_parente" name="idade_parente"
+                                   min="0" max="120" required placeholder="Ex: 30">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Seção: Fatores de Risco -->
+                <fieldset class="form-group">
+                    <legend><i class="fas fa-heartbeat"></i> Fatores de Risco e Estilo de Vida</legend>
+                    <p class="field-description">Marque os fatores presentes no parente a ser avaliado:</p>
+
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="tabagismo" name="tabagismo">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-smoking"></i> Tabagismo
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="alcoolismo" name="alcoolismo">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-wine-glass-alt"></i> Consumo excessivo de álcool
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="sedentarismo" name="sedentarismo">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-couch"></i> Sedentarismo
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="obesidade" name="obesidade">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-weight"></i> Obesidade
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="exposicao_quimicos" name="exposicao_quimicos">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-flask"></i> Exposição a agentes químicos
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="dieta_inadequada" name="dieta_inadequada">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-hamburger"></i> Dieta inadequada
+                            </span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="estresse_cronico" name="estresse_cronico">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">
+                                <i class="fas fa-brain"></i> Estresse crônico
+                            </span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <!-- Botão Submit -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-predict" id="btn-submit">
+                        <i class="fas fa-calculator"></i>
+                        Calcular Probabilidade
+                    </button>
+                    <button type="reset" class="btn-reset" id="btn-reset">
+                        <i class="fas fa-redo"></i>
+                        Limpar Formulário
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p>Analisando dados genéticos...</p>
+        </div>
+
+        <!-- Resultados -->
+        <div class="results-section" id="results-section" style="display:none;">
+            <h2><i class="fas fa-chart-pie"></i> Resultado da Análise</h2>
+
+            <!-- Card principal de resultado -->
+            <div class="result-main" id="result-main">
+                <div class="probability-display">
+                    <div class="probability-circle" id="probability-circle">
+                        <svg viewBox="0 0 120 120">
+                            <circle class="bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="progress" cx="60" cy="60" r="54" id="progress-circle"></circle>
+                        </svg>
+                        <div class="probability-value">
+                            <span id="probability-number">0</span>%
+                        </div>
+                    </div>
+                    <div class="probability-label">Probabilidade Estimada</div>
+                </div>
+
+                <div class="result-details">
+                    <div class="risk-badge" id="risk-badge">
+                        <span class="risk-level" id="risk-level">-</span>
+                    </div>
+                    <div class="result-info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Doença</span>
+                            <span class="info-value" id="result-disease">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Parentesco</span>
+                            <span class="info-value" id="result-relationship">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Herança</span>
+                            <span class="info-value" id="result-inheritance">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Confiança do Modelo</span>
+                            <span class="info-value" id="result-confidence">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalhes técnicos -->
+            <div class="technical-details">
+                <h3><i class="fas fa-cogs"></i> Detalhes Técnicos</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <span class="tech-label">Predição Classificador</span>
+                        <span class="tech-value" id="tech-classifier">-</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-label">Predição Regressor</span>
+                        <span class="tech-value" id="tech-regressor">-</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-label">Compartilhamento Genético</span>
+                        <span class="tech-value" id="tech-sharing">-</span>
+                    </div>
+                    <div class="tech-item">
+                        <span class="tech-label">Penetrância</span>
+                        <span class="tech-value" id="tech-penetrance">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recomendações -->
+            <div class="recommendations">
+                <h3><i class="fas fa-lightbulb"></i> Recomendações</h3>
+                <ul id="recommendations-list">
+                </ul>
+            </div>
+        </div>
+
+        <!-- Informações educativas -->
+        <div class="info-section">
+            <h2><i class="fas fa-book-medical"></i> Sobre Herança Genética</h2>
+            <div class="info-cards" id="inheritance-cards">
+                <div class="info-card">
+                    <h3>Autossômica Dominante</h3>
+                    <p>Basta uma cópia do gene alterado para manifestar a doença. Cada filho de um afetado tem 50% de chance de herdar.</p>
+                    <span class="examples">Ex: Huntington, Neurofibromatose</span>
+                </div>
+                <div class="info-card">
+                    <h3>Autossômica Recessiva</h3>
+                    <p>São necessárias duas cópias do gene alterado. Portadores (uma cópia) geralmente não apresentam sintomas.</p>
+                    <span class="examples">Ex: Fibrose Cística, Anemia Falciforme</span>
+                </div>
+                <div class="info-card">
+                    <h3>Ligada ao X</h3>
+                    <p>Gene localizado no cromossomo X. Homens são mais afetados pois possuem apenas um cromossomo X.</p>
+                    <span class="examples">Ex: Hemofilia, Distrofia de Duchenne</span>
+                </div>
+                <div class="info-card">
+                    <h3>Multifatorial</h3>
+                    <p>Combinação de predisposição genética com fatores ambientais. Penetrância variável e influência do estilo de vida.</p>
+                    <span class="examples">Ex: Câncer de Mama BRCA, Melanoma Familiar</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 GenePred - Sistema Educacional de Predição Genética</p>
+            <p class="footer-disclaimer">
+                Este sistema utiliza modelos de Machine Learning treinados com dados sintéticos baseados em padrões reais de herança genética.
+                Não possui finalidade diagnóstica.
+            </p>
+        </div>
+    </footer>
+
+    <script src="static/app.js"></script>
+</body>
+</html>
