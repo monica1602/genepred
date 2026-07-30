@@ -8,3 +8,16 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.9"
+
+  - type: web
+    name: cinematch
+    runtime: python
+    pythonVersion: "3.11.9"
+    rootDir: movies
+    buildCommand: pip install --prefer-binary -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: TMDB_API_KEY
+        sync: false
