@@ -129,14 +129,20 @@ function showDiseaseInfo() {
 
     const categoryLabels = {
         'cancer': 'Câncer Hereditário',
-        'doenca_rara': 'Doença Rara'
+        'doenca_rara': 'Doença Rara',
+        'autoimune': 'Doença Autoimune',
+        'cardiovascular': 'Cardiovascular',
+        'neurologica': 'Neurológica',
+        'metabolica': 'Metabólica',
+        'psiquiatrica': 'Psiquiátrica'
     };
 
     const inheritanceLabels = {
         'autossomica_dominante': 'Autossômica Dominante',
         'autossomica_recessiva': 'Autossômica Recessiva',
         'ligada_x_recessiva': 'Ligada ao X Recessiva',
-        'multifatorial_dominante': 'Multifatorial Dominante'
+        'multifatorial_dominante': 'Multifatorial Dominante',
+        'multifatorial_poligenica': 'Multifatorial Poligênica'
     };
 
     document.getElementById('disease-category').textContent = categoryLabels[category] || category;
@@ -280,7 +286,8 @@ function displayResults(result) {
         'autossomica_dominante': 'Autossômica Dominante',
         'autossomica_recessiva': 'Autossômica Recessiva',
         'ligada_x_recessiva': 'Ligada ao X Recessiva',
-        'multifatorial_dominante': 'Multifatorial Dominante'
+        'multifatorial_dominante': 'Multifatorial Dominante',
+        'multifatorial_poligenica': 'Multifatorial Poligênica'
     };
     document.getElementById('result-inheritance').textContent =
         inheritanceLabels[result.doenca_info.tipo_heranca] || result.doenca_info.tipo_heranca;
