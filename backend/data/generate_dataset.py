@@ -18,9 +18,14 @@ Fatores considerados:
 """
 
 import numpy as np
-import pandas as pd
 import json
 import os
+
+try:
+    import pandas as pd
+    HAS_PANDAS = True
+except ImportError:
+    HAS_PANDAS = False
 
 # Seed para reprodutibilidade
 np.random.seed(42)
@@ -853,7 +858,7 @@ def gerar_dataset(n_amostras=5000):
         }
         dados.append(registro)
 
-    df = pd.DataFrame(dados)
+    df = pd.DataFrame(dados)  # Requer pandas
     return df
 
 
