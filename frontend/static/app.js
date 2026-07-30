@@ -27,36 +27,38 @@ async function loadDiseases() {
         const select = document.getElementById('doenca_id');
 
         // Agrupar por categoria
-        const cancers = diseases.filter(d => d.categoria === 'cancer');
-        const rare = diseases.filter(d => d.categoria === 'doenca_rara');
+        const categories = {
+            'cancer': { label: 'Cânceres Hereditários', items: [] },
+            'autoimune': { label: 'Doenças Autoimunes', items: [] },
+            'doenca_rara': { label: 'Doenças Genéticas Raras', items: [] },
+            'cardiovascular': { label: 'Doenças Cardiovasculares Hereditárias', items: [] },
+            'neurologica': { label: 'Doenças Neurológicas', items: [] },
+            'metabolica': { label: 'Doenças Metabólicas', items: [] },
+            'psiquiatrica': { label: 'Doenças Psiquiátricas (Componente Genético)', items: [] },
+        };
 
-        // Grupo de Cânceres Hereditários
-        const cancerGroup = document.createElement('optgroup');
-        cancerGroup.label = 'Cânceres Hereditários';
-        cancers.forEach(d => {
-            const option = document.createElement('option');
-            option.value = d.id;
-            option.textContent = d.nome;
-            option.dataset.category = d.categoria;
-            option.dataset.inheritance = d.tipo_heranca;
-            option.dataset.penetrance = d.penetrancia;
-            cancerGroup.appendChild(option);
+        diseases.forEach(d => {
+            if (categories[d.categoria]) {
+                categories[d.categoria].items.push(d);
+            }
         });
-        select.appendChild(cancerGroup);
 
-        // Grupo de Doenças Raras
-        const rareGroup = document.createElement('optgroup');
-        rareGroup.label = 'Doenças Genéticas Raras';
-        rare.forEach(d => {
-            const option = document.createElement('option');
-            option.value = d.id;
-            option.textContent = d.nome;
-            option.dataset.category = d.categoria;
-            option.dataset.inheritance = d.tipo_heranca;
-            option.dataset.penetrance = d.penetrancia;
-            rareGroup.appendChild(option);
+        // Criar optgroups para cada categoria
+        Object.values(categories).forEach(cat => {
+            if (cat.items.length === 0) return;
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = cat.label;
+            cat.items.forEach(d => {
+                const option = document.createElement('option');
+                option.value = d.id;
+                option.textContent = d.nome;
+                option.dataset.category = d.categoria;
+                option.dataset.inheritance = d.tipo_heranca;
+                option.dataset.penetrance = d.penetrancia;
+                optgroup.appendChild(option);
+            });
+            select.appendChild(optgroup);
         });
-        select.appendChild(rareGroup);
 
         // Event listener para mostrar info da doença
         select.addEventListener('change', showDiseaseInfo);

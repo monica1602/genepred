@@ -30,67 +30,11 @@ np.random.seed(42)
 # ============================================================
 
 DOENCAS = {
-    # Doenças autossômicas dominantes
-    "huntington": {
-        "nome": "Doença de Huntington",
-        "tipo_heranca": "autossomica_dominante",
-        "penetrancia": 0.95,
-        "categoria": "doenca_rara"
-    },
-    "retinoblastoma": {
-        "nome": "Retinoblastoma Hereditário",
-        "tipo_heranca": "autossomica_dominante",
-        "penetrancia": 0.90,
-        "categoria": "cancer"
-    },
-    "neurofibromatose": {
-        "nome": "Neurofibromatose tipo 1",
-        "tipo_heranca": "autossomica_dominante",
-        "penetrancia": 0.95,
-        "categoria": "doenca_rara"
-    },
-    "sindrome_lynch": {
-        "nome": "Síndrome de Lynch (Câncer Colorretal Hereditário)",
-        "tipo_heranca": "autossomica_dominante",
-        "penetrancia": 0.80,
-        "categoria": "cancer"
-    },
+    # ================================================================
+    # CÂNCERES HEREDITÁRIOS
+    # ================================================================
 
-    # Doenças autossômicas recessivas
-    "fibrose_cistica": {
-        "nome": "Fibrose Cística",
-        "tipo_heranca": "autossomica_recessiva",
-        "penetrancia": 0.99,
-        "categoria": "doenca_rara"
-    },
-    "anemia_falciforme": {
-        "nome": "Anemia Falciforme",
-        "tipo_heranca": "autossomica_recessiva",
-        "penetrancia": 0.99,
-        "categoria": "doenca_rara"
-    },
-    "fenilcetonuria": {
-        "nome": "Fenilcetonúria",
-        "tipo_heranca": "autossomica_recessiva",
-        "penetrancia": 0.99,
-        "categoria": "doenca_rara"
-    },
-
-    # Doenças ligadas ao X
-    "hemofilia_a": {
-        "nome": "Hemofilia A",
-        "tipo_heranca": "ligada_x_recessiva",
-        "penetrancia": 0.99,
-        "categoria": "doenca_rara"
-    },
-    "duchenne": {
-        "nome": "Distrofia Muscular de Duchenne",
-        "tipo_heranca": "ligada_x_recessiva",
-        "penetrancia": 0.99,
-        "categoria": "doenca_rara"
-    },
-
-    # Doenças multifatoriais / Cânceres hereditários
+    # Cânceres com herança dominante de alta penetrância
     "cancer_mama_brca1": {
         "nome": "Câncer de Mama (BRCA1)",
         "tipo_heranca": "multifatorial_dominante",
@@ -120,6 +64,462 @@ DOENCAS = {
         "tipo_heranca": "multifatorial_dominante",
         "penetrancia": 0.58,
         "categoria": "cancer"
+    },
+    "sindrome_lynch": {
+        "nome": "Síndrome de Lynch (Câncer Colorretal Hereditário)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.80,
+        "categoria": "cancer"
+    },
+    "retinoblastoma": {
+        "nome": "Retinoblastoma Hereditário",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "cancer"
+    },
+    "cancer_tireoide_medular": {
+        "nome": "Câncer Medular de Tireoide (MEN2)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "cancer"
+    },
+    "cancer_rim_vhl": {
+        "nome": "Câncer Renal (Von Hippel-Lindau)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "cancer"
+    },
+    "polipose_adenomatosa": {
+        "nome": "Polipose Adenomatosa Familiar (FAP)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.95,
+        "categoria": "cancer"
+    },
+    "cancer_pancreas_hereditario": {
+        "nome": "Câncer de Pâncreas Hereditário",
+        "tipo_heranca": "multifatorial_dominante",
+        "penetrancia": 0.40,
+        "categoria": "cancer"
+    },
+    "cancer_estomago_difuso": {
+        "nome": "Câncer Gástrico Difuso Hereditário (CDH1)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.70,
+        "categoria": "cancer"
+    },
+    "cancer_endometrio": {
+        "nome": "Câncer de Endométrio Hereditário",
+        "tipo_heranca": "multifatorial_dominante",
+        "penetrancia": 0.60,
+        "categoria": "cancer"
+    },
+    "leucemia_familiar": {
+        "nome": "Leucemia Mieloide Familiar",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.50,
+        "categoria": "cancer"
+    },
+    "li_fraumeni": {
+        "nome": "Síndrome de Li-Fraumeni (TP53)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "cancer"
+    },
+    "cancer_pulmao_hereditario": {
+        "nome": "Câncer de Pulmão Hereditário",
+        "tipo_heranca": "multifatorial_dominante",
+        "penetrancia": 0.35,
+        "categoria": "cancer"
+    },
+    "neuroblastoma_familiar": {
+        "nome": "Neuroblastoma Familiar",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.50,
+        "categoria": "cancer"
+    },
+    "cancer_bexiga_hereditario": {
+        "nome": "Câncer de Bexiga Hereditário",
+        "tipo_heranca": "multifatorial_dominante",
+        "penetrancia": 0.30,
+        "categoria": "cancer"
+    },
+
+    # ================================================================
+    # DOENÇAS AUTOIMUNES
+    # ================================================================
+
+    "lupus": {
+        "nome": "Lúpus Eritematoso Sistêmico (LES)",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.25,
+        "categoria": "autoimune"
+    },
+    "artrite_reumatoide": {
+        "nome": "Artrite Reumatoide",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.30,
+        "categoria": "autoimune"
+    },
+    "diabetes_tipo1": {
+        "nome": "Diabetes Mellitus Tipo 1",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.35,
+        "categoria": "autoimune"
+    },
+    "esclerose_multipla": {
+        "nome": "Esclerose Múltipla",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.25,
+        "categoria": "autoimune"
+    },
+    "doenca_celica": {
+        "nome": "Doença Celíaca",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.40,
+        "categoria": "autoimune"
+    },
+    "hashimoto": {
+        "nome": "Tireoidite de Hashimoto",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.35,
+        "categoria": "autoimune"
+    },
+    "doenca_graves": {
+        "nome": "Doença de Graves",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.30,
+        "categoria": "autoimune"
+    },
+    "psoríase": {
+        "nome": "Psoríase",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.35,
+        "categoria": "autoimune"
+    },
+    "espondilite_anquilosante": {
+        "nome": "Espondilite Anquilosante (HLA-B27)",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.40,
+        "categoria": "autoimune"
+    },
+    "vitiligo": {
+        "nome": "Vitiligo",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.25,
+        "categoria": "autoimune"
+    },
+    "doenca_crohn": {
+        "nome": "Doença de Crohn",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.30,
+        "categoria": "autoimune"
+    },
+    "colite_ulcerativa": {
+        "nome": "Colite Ulcerativa",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.28,
+        "categoria": "autoimune"
+    },
+    "miastenia_gravis": {
+        "nome": "Miastenia Gravis",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.20,
+        "categoria": "autoimune"
+    },
+    "sindrome_sjogren": {
+        "nome": "Síndrome de Sjögren",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.22,
+        "categoria": "autoimune"
+    },
+    "alopecia_areata": {
+        "nome": "Alopecia Areata",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.30,
+        "categoria": "autoimune"
+    },
+
+    # ================================================================
+    # DOENÇAS GENÉTICAS RARAS
+    # ================================================================
+
+    "huntington": {
+        "nome": "Doença de Huntington",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.95,
+        "categoria": "doenca_rara"
+    },
+    "neurofibromatose": {
+        "nome": "Neurofibromatose tipo 1",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.95,
+        "categoria": "doenca_rara"
+    },
+    "fibrose_cistica": {
+        "nome": "Fibrose Cística",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "anemia_falciforme": {
+        "nome": "Anemia Falciforme",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "fenilcetonuria": {
+        "nome": "Fenilcetonúria",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "hemofilia_a": {
+        "nome": "Hemofilia A",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "hemofilia_b": {
+        "nome": "Hemofilia B",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "duchenne": {
+        "nome": "Distrofia Muscular de Duchenne",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "marfan": {
+        "nome": "Síndrome de Marfan",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "ehlers_danlos": {
+        "nome": "Síndrome de Ehlers-Danlos",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "doenca_rara"
+    },
+    "osteogenese_imperfeita": {
+        "nome": "Osteogênese Imperfeita",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "doenca_wilson": {
+        "nome": "Doença de Wilson",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.95,
+        "categoria": "doenca_rara"
+    },
+    "talassemia": {
+        "nome": "Talassemia Beta Major",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "sindrome_turner": {
+        "nome": "Síndrome de Turner",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "esclerose_tuberosa": {
+        "nome": "Esclerose Tuberosa",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "doenca_rara"
+    },
+    "sindrome_angelman": {
+        "nome": "Síndrome de Angelman",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "ataxia_friedreich": {
+        "nome": "Ataxia de Friedreich",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.95,
+        "categoria": "doenca_rara"
+    },
+    "gaucher": {
+        "nome": "Doença de Gaucher",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "tay_sachs": {
+        "nome": "Doença de Tay-Sachs",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "albinismo": {
+        "nome": "Albinismo Oculocutâneo",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+
+    # ================================================================
+    # DOENÇAS CARDIOVASCULARES HEREDITÁRIAS
+    # ================================================================
+
+    "cardiomiopatia_hipertrofica": {
+        "nome": "Cardiomiopatia Hipertrófica",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.75,
+        "categoria": "cardiovascular"
+    },
+    "cardiomiopatia_dilatada": {
+        "nome": "Cardiomiopatia Dilatada Familiar",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.60,
+        "categoria": "cardiovascular"
+    },
+    "sindrome_qt_longo": {
+        "nome": "Síndrome do QT Longo",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.70,
+        "categoria": "cardiovascular"
+    },
+    "sindrome_brugada": {
+        "nome": "Síndrome de Brugada",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.50,
+        "categoria": "cardiovascular"
+    },
+    "hipercolesterolemia_familiar": {
+        "nome": "Hipercolesterolemia Familiar",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "cardiovascular"
+    },
+    "displasia_arritmogenica_vd": {
+        "nome": "Displasia Arritmogênica do VD",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.55,
+        "categoria": "cardiovascular"
+    },
+    "aneurisma_aorta_familiar": {
+        "nome": "Aneurisma de Aorta Torácica Familiar",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.65,
+        "categoria": "cardiovascular"
+    },
+
+    # ================================================================
+    # DOENÇAS NEUROLÓGICAS/NEURODEGENERATIVAS
+    # ================================================================
+
+    "alzheimer_familiar": {
+        "nome": "Doença de Alzheimer Familiar (Início Precoce)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "neurologica"
+    },
+    "parkinson_familiar": {
+        "nome": "Doença de Parkinson Familiar (LRRK2/PARK8)",
+        "tipo_heranca": "multifatorial_dominante",
+        "penetrancia": 0.45,
+        "categoria": "neurologica"
+    },
+    "ela_familiar": {
+        "nome": "Esclerose Lateral Amiotrófica Familiar (ELA)",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.80,
+        "categoria": "neurologica"
+    },
+    "epilepsia_genetica": {
+        "nome": "Epilepsia Genética Generalizada",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.35,
+        "categoria": "neurologica"
+    },
+    "charcot_marie_tooth": {
+        "nome": "Doença de Charcot-Marie-Tooth",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "neurologica"
+    },
+    "atrofia_muscular_espinhal": {
+        "nome": "Atrofia Muscular Espinhal (AME)",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "neurologica"
+    },
+
+    # ================================================================
+    # DOENÇAS METABÓLICAS HEREDITÁRIAS
+    # ================================================================
+
+    "diabetes_tipo2_genetico": {
+        "nome": "Diabetes Tipo 2 (Forte Componente Genético)",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.45,
+        "categoria": "metabolica"
+    },
+    "diabetes_mody": {
+        "nome": "Diabetes MODY",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.85,
+        "categoria": "metabolica"
+    },
+    "hemocromatose": {
+        "nome": "Hemocromatose Hereditária",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.70,
+        "categoria": "metabolica"
+    },
+    "porfiria_aguda": {
+        "nome": "Porfiria Aguda Intermitente",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.30,
+        "categoria": "metabolica"
+    },
+    "deficiencia_alfa1_antitripsina": {
+        "nome": "Deficiência de Alfa-1 Antitripsina",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.80,
+        "categoria": "metabolica"
+    },
+    "galactosemia": {
+        "nome": "Galactosemia",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "metabolica"
+    },
+
+    # ================================================================
+    # DOENÇAS PSIQUIÁTRICAS COM COMPONENTE GENÉTICO
+    # ================================================================
+
+    "esquizofrenia": {
+        "nome": "Esquizofrenia",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.40,
+        "categoria": "psiquiatrica"
+    },
+    "transtorno_bipolar": {
+        "nome": "Transtorno Bipolar",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.45,
+        "categoria": "psiquiatrica"
+    },
+    "autismo_genetico": {
+        "nome": "Transtorno do Espectro Autista (TEA)",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.50,
+        "categoria": "psiquiatrica"
+    },
+    "tdah_genetico": {
+        "nome": "TDAH (Componente Genético)",
+        "tipo_heranca": "multifatorial_poligenica",
+        "penetrancia": 0.45,
+        "categoria": "psiquiatrica"
     },
 }
 
@@ -204,6 +604,16 @@ def calcular_probabilidade_base(doenca_info, parentesco_info, sexo_parente):
         else:
             prob = 0.125 * penetrancia * 0.55
 
+    elif tipo_heranca == "multifatorial_poligenica":
+        # Doenças poligênicas (autoimunes, psiquiátricas, metabólicas)
+        # Risco é baseado em múltiplos genes, menor efeito individual
+        if grau == 1:
+            prob = compartilhamento * penetrancia * 0.60
+        elif grau == 2:
+            prob = compartilhamento * penetrancia * 0.40
+        else:
+            prob = compartilhamento * penetrancia * 0.25
+
     else:
         prob = compartilhamento * penetrancia * 0.5
 
@@ -228,7 +638,9 @@ def ajustar_probabilidade_por_fatores(prob_base, fatores, doenca_info):
     Ajusta a probabilidade base considerando fatores ambientais.
     Fatores ambientais têm mais impacto em doenças multifatoriais.
     """
-    if doenca_info["categoria"] == "cancer":
+    categoria = doenca_info["categoria"]
+
+    if categoria == "cancer":
         # Cânceres são mais influenciados por fatores ambientais
         fator_ajuste = 1.0
         if fatores["tabagismo"]:
@@ -247,6 +659,87 @@ def ajustar_probabilidade_por_fatores(prob_base, fatores, doenca_info):
             fator_ajuste += 0.03
 
         prob_ajustada = prob_base * fator_ajuste
+
+    elif categoria == "autoimune":
+        # Doenças autoimunes são bastante influenciadas por ambiente
+        fator_ajuste = 1.0
+        if fatores["estresse_cronico"]:
+            fator_ajuste += 0.20
+        if fatores["tabagismo"]:
+            fator_ajuste += 0.12
+        if fatores["dieta_inadequada"]:
+            fator_ajuste += 0.10
+        if fatores["sedentarismo"]:
+            fator_ajuste += 0.08
+        if fatores["obesidade"]:
+            fator_ajuste += 0.08
+        if fatores["exposicao_quimicos"]:
+            fator_ajuste += 0.15
+        if fatores["alcoolismo"]:
+            fator_ajuste += 0.05
+
+        prob_ajustada = prob_base * fator_ajuste
+
+    elif categoria == "cardiovascular":
+        # Doenças cardiovasculares - estilo de vida tem grande impacto
+        fator_ajuste = 1.0
+        if fatores["tabagismo"]:
+            fator_ajuste += 0.18
+        if fatores["sedentarismo"]:
+            fator_ajuste += 0.15
+        if fatores["obesidade"]:
+            fator_ajuste += 0.15
+        if fatores["estresse_cronico"]:
+            fator_ajuste += 0.12
+        if fatores["dieta_inadequada"]:
+            fator_ajuste += 0.10
+        if fatores["alcoolismo"]:
+            fator_ajuste += 0.08
+        if fatores["exposicao_quimicos"]:
+            fator_ajuste += 0.03
+
+        prob_ajustada = prob_base * fator_ajuste
+
+    elif categoria in ["neurologica", "psiquiatrica"]:
+        # Doenças neurológicas/psiquiátricas
+        fator_ajuste = 1.0
+        if fatores["estresse_cronico"]:
+            fator_ajuste += 0.15
+        if fatores["alcoolismo"]:
+            fator_ajuste += 0.10
+        if fatores["tabagismo"]:
+            fator_ajuste += 0.05
+        if fatores["sedentarismo"]:
+            fator_ajuste += 0.05
+        if fatores["exposicao_quimicos"]:
+            fator_ajuste += 0.08
+        if fatores["dieta_inadequada"]:
+            fator_ajuste += 0.05
+        if fatores["obesidade"]:
+            fator_ajuste += 0.03
+
+        prob_ajustada = prob_base * fator_ajuste
+
+    elif categoria == "metabolica":
+        # Doenças metabólicas - dieta e estilo de vida impactam
+        fator_ajuste = 1.0
+        if fatores["obesidade"]:
+            fator_ajuste += 0.18
+        if fatores["dieta_inadequada"]:
+            fator_ajuste += 0.15
+        if fatores["sedentarismo"]:
+            fator_ajuste += 0.12
+        if fatores["alcoolismo"]:
+            fator_ajuste += 0.10
+        if fatores["estresse_cronico"]:
+            fator_ajuste += 0.05
+        if fatores["tabagismo"]:
+            fator_ajuste += 0.05
+        if fatores["exposicao_quimicos"]:
+            fator_ajuste += 0.05
+
+        prob_ajustada = prob_base * fator_ajuste
+
     else:
         # Doenças genéticas raras são menos influenciadas por ambiente
         fator_ajuste = 1.0
@@ -309,7 +802,14 @@ def gerar_dataset(n_amostras=5000):
 
         # Ajustar por idade (algumas doenças são de início tardio)
         if doenca_id in ["huntington", "cancer_mama_brca1", "cancer_mama_brca2",
-                         "cancer_prostata", "melanoma_familiar", "sindrome_lynch"]:
+                         "cancer_prostata", "melanoma_familiar", "sindrome_lynch",
+                         "alzheimer_familiar", "parkinson_familiar", "ela_familiar",
+                         "cancer_pancreas_hereditario", "cancer_estomago_difuso",
+                         "cancer_endometrio", "cancer_pulmao_hereditario",
+                         "cancer_bexiga_hereditario", "diabetes_tipo2_genetico",
+                         "hipercolesterolemia_familiar", "cardiomiopatia_hipertrofica",
+                         "esquizofrenia", "transtorno_bipolar",
+                         "artrite_reumatoide", "lupus", "esclerose_multipla"]:
             # Doenças de início tardio - risco aumenta com idade
             if idade_parente < 20:
                 prob_ajustada *= 0.3
