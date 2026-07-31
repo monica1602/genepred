@@ -1,127 +1,248 @@
-# 📚 BookMatch - Recomendação de Livros
+# GenePred - Sistema de Predicao de Doencas Geneticas com Machine Learning
 
-Sistema inteligente de recomendação de livros. Digite o nome de um livro e receba **5 sugestões** do mesmo gênero e estilo de escrita, com links diretos para compra na Amazon.
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![Flask](https://img.shields.io/badge/Flask-3.0-green?logo=flask)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3%2B-orange?logo=scikit-learn)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 🌐 Acesse o Site
+Sistema web que utiliza Machine Learning para estimar a probabilidade de um parente desenvolver uma doenca genetica, com base nos dados de um familiar ja diagnosticado.
 
-**[bookmatch.onrender.com](https://bookmatch.onrender.com)** (ou o link do seu deploy)
+## Acesse o Site
 
----
-
-## 🎯 Como Funciona
-
-1. O usuário digita o nome de um livro que gostou
-2. O sistema identifica o gênero, subgênero e estilo
-3. Retorna **5 livros recomendados** de outros autores com estilo similar
-4. Cada resultado inclui capa, descrição, avaliação e link para Amazon.com.br
+**[genepred.onrender.com](https://genepred.onrender.com)**
 
 ---
 
-## 📖 Base de Dados
-
-O site conta com uma base local de **+1800 livros** organizados por gênero:
-
-| Gênero | Exemplos |
-|--------|----------|
-| Suspense / Thriller | Harlan Coben, Agatha Christie, Freida McFadden, Gillian Flynn |
-| Terror | Stephen King, H.P. Lovecraft, Anne Rice, Dean Koontz |
-| Romance | Colleen Hoover, Nicholas Sparks, Julia Quinn, Jane Austen |
-| Fantasia | Tolkien, Sarah J. Maas, Brandon Sanderson, Leigh Bardugo |
-| Ficção Científica | Isaac Asimov, Frank Herbert, George Orwell, Liu Cixin |
-| Juvenil / YA | John Green, Thalita Rebouças, Paula Pimenta, Rick Riordan |
-| Infantil | Monteiro Lobato, Ziraldo, Roald Dahl, Ruth Rocha |
-| Literatura Brasileira | Machado de Assis, Clarice Lispector, Jorge Amado |
-| Biografias | Atletas, músicos, líderes mundiais, artistas |
-| Autoajuda | Produtividade, finanças, psicologia, filosofia |
-| Fatos Reais | Holocausto, crimes, guerras, sobrevivência |
-| Romance de Época | Diana Gabaldon, Lisa Kleypas, Ken Follett |
-| Dark Romance | Ana Huang, Penelope Douglas, H.D. Carlton |
-| Mangás | Death Note, Naruto, One Piece, Demon Slayer |
-| Culinária | Rita Lobo, Jamie Oliver, Anthony Bourdain |
-| Ciência | Carl Sagan, Stephen Hawking, Yuval Harari |
-| História | Laurentino Gomes, Antony Beevor |
-| Filosofia | Platão, Nietzsche, Sêneca, Camus |
+> **Aviso:** Este sistema e uma ferramenta educacional e de estimativa. Nao substitui aconselhamento genetico profissional nem diagnostico medico.
 
 ---
 
-## 🛠️ Tecnologias
+## Visao Geral
 
-- **HTML5** - Estrutura semântica e acessível
-- **CSS3** - Design responsivo com variáveis CSS e grid layout
-- **JavaScript** - Lógica de busca fuzzy e sistema de pontuação por similaridade
-- **Open Library Covers API** - Capas dos livros via ISBN
-- **Amazon.com.br** - Links de compra para cada livro
+O GenePred analisa padroes de heranca genetica, grau de parentesco, penetrancia da doenca e fatores ambientais para calcular uma estimativa de risco. O modelo utiliza um ensemble de **Random Forest** (classificacao) e **Gradient Boosting** (regressao de probabilidade).
+
+### Funcionalidades
+
+- Predicao de risco para **76 doencas geneticas** divididas em 7 categorias
+- Calculo baseado em padroes reais de heranca mendeliana
+- Consideracao de **fatores ambientais e estilo de vida**
+- Interface web responsiva com visualizacao grafica dos resultados
+- Geracao de recomendacoes personalizadas por nivel de risco
+- API REST para integracao com outros sistemas
 
 ---
 
-## 🚀 Como Rodar Localmente
+## Doencas Cobertas
+
+| Categoria | Qtd | Exemplos |
+|-----------|:---:|---------|
+| Canceres Hereditarios | 18 | Mama (BRCA1/2), Li-Fraumeni, Lynch, Pancreas, Pulmao |
+| Doencas Autoimunes | 15 | Lupus, Artrite Reumatoide, Esclerose Multipla, Crohn, Celiaca |
+| Doencas Geneticas Raras | 20 | Huntington, Marfan, Fibrose Cistica, Tay-Sachs, Gaucher |
+| Cardiovasculares | 7 | Cardiomiopatia Hipertrofica, QT Longo, Brugada |
+| Neurologicas | 6 | Alzheimer Familiar, Parkinson, ELA, Charcot-Marie-Tooth |
+| Metabolicas | 6 | Diabetes MODY, Hemocromatose, Galactosemia |
+| Psiquiatricas | 4 | Esquizofrenia, Bipolar, TEA, TDAH |
+
+---
+
+## Tipos de Heranca Suportados
+
+- **Autossomica Dominante** - 50% de chance para filhos de afetados (ex: Huntington)
+- **Autossomica Recessiva** - Requer duas copias do gene alterado (ex: Fibrose Cistica)
+- **Ligada ao X Recessiva** - Homens mais afetados (ex: Hemofilia, Duchenne)
+- **Multifatorial Dominante** - Gene dominante + influencia ambiental (ex: BRCA1/2)
+- **Multifatorial Poligenica** - Multiplos genes + ambiente (ex: Lupus, Diabetes Tipo 1)
+
+---
+
+## Arquitetura
+
+```
+genepred/
+├── backend/
+│   ├── app.py                      # API Flask + treinamento sem pandas
+│   ├── data/
+│   │   └── generate_dataset.py     # Gerador de dataset sintetico
+│   └── models/
+│       ├── genetic_predictor.py    # Modelo ML (RF + GBR)
+│       └── trained_model.pkl       # Modelo pre-treinado
+├── frontend/
+│   ├── index.html                  # Interface principal
+│   └── static/
+│       ├── styles.css              # Estilos
+│       └── app.js                  # Logica do frontend
+├── requirements.txt                # Dependencias Python
+├── render.yaml                     # Configuracao de deploy (Render)
+├── Procfile                        # Configuracao de processo
+└── run.py                          # Script para execucao local
+```
+
+---
+
+## Como Executar Localmente
+
+### Pre-requisitos
+
+- Python 3.10 ou superior
+
+### Instalacao
 
 ```bash
-# Clone o repositório
-git clone https://github.com/monica1602/bookmatch.git
+# Clonar o repositorio
+git clone https://github.com/monica1602/genepred.git
+cd genepred
 
-# Entre na pasta
-cd bookmatch
+# Instalar dependencias
+pip install -r requirements.txt
 
-# Inicie um servidor local
-python -m http.server 8080
-
-# Acesse no navegador
-# http://localhost:8080
+# Para treinamento local com dataset completo (opcional)
+pip install pandas
 ```
 
-> Não precisa de npm install nem dependências externas.
+### Execucao
 
----
-
-## 🔍 Algoritmo de Recomendação
-
-O sistema usa um algoritmo de pontuação baseado em:
-
-| Critério | Pontos |
-|----------|--------|
-| Mesmo gênero | +10 |
-| Mesmo subgênero | +8 |
-| Época similar (30 anos) | +2 |
-| Rating alto (4.3+) | +1 |
-| Mesmo autor | -5 (penalidade para variedade) |
-
-Além disso, o sistema garante **no máximo 1 livro do mesmo autor** nas recomendações, priorizando diversidade.
-
----
-
-## 📱 Responsivo
-
-O site funciona em:
-- Desktop
-- Tablet
-- Celular
-
----
-
-## 📂 Estrutura do Projeto
-
-```
-bookmatch/
-├── index.html        # Página principal
-├── styles.css        # Estilos responsivos
-├── app.js            # Lógica de busca e recomendação
-├── books-data.js     # Base de dados com +1800 livros
-└── README.md         # Este arquivo
+```bash
+python run.py
 ```
 
----
+Acesse **http://localhost:5000** no navegador.
 
-## 🤝 Contribuições
-
-Quer adicionar mais livros ou melhorar o algoritmo? Fique à vontade para abrir um Pull Request!
+Na primeira execucao, o modelo sera treinado automaticamente (~10 segundos).
 
 ---
 
-## 📄 Licença
+## API REST
 
-Este projeto é de uso livre para fins educacionais e pessoais.
+### POST /api/predict
+
+Faz a predicao de risco genetico.
+
+**Request:**
+```json
+{
+  "doenca_id": "cancer_mama_brca1",
+  "parentesco": "irma",
+  "sexo_parente": 0,
+  "idade_parente": 40,
+  "idade_afetado": 55,
+  "num_afetados_familia": 2,
+  "tabagismo": 0,
+  "alcoolismo": 0,
+  "sedentarismo": 1,
+  "obesidade": 0,
+  "exposicao_quimicos": 0,
+  "dieta_inadequada": 0,
+  "estresse_cronico": 1
+}
+```
+
+**Response:**
+```json
+{
+  "probabilidade": 42.88,
+  "nivel_risco": "Moderado",
+  "cor_risco": "#ffc107",
+  "confianca_modelo": 54.4,
+  "recomendacoes": ["..."],
+  "doenca_info": { "nome": "Cancer de Mama (BRCA1)", "tipo_heranca": "..." },
+  "parentesco_info": { "parentesco": "irma", "grau": 1 }
+}
+```
+
+### GET /api/diseases
+
+Lista todas as doencas disponiveis.
+
+### GET /api/relationships
+
+Lista todos os graus de parentesco disponiveis.
+
+### GET /api/model-info
+
+Retorna metricas e informacoes do modelo treinado.
 
 ---
 
-Feito com 💜 usando Kiro AI
+## Modelo de Machine Learning
+
+### Algoritmos
+
+| Componente | Algoritmo | Funcao |
+|-----------|-----------|--------|
+| Classificador | Random Forest | Classifica se ha risco ou nao |
+| Regressor | Gradient Boosting | Estima a probabilidade percentual |
+| Resultado Final | Ensemble (40% RF + 60% GBR) | Combinacao ponderada |
+
+### Features Utilizadas
+
+**Geneticas:**
+- Grau de parentesco e compartilhamento genetico (%)
+- Tipo de heranca da doenca
+- Penetrancia da doenca
+- Numero de afetados na familia
+
+**Demograficas:**
+- Sexo e idade do parente avaliado
+- Idade do parente afetado
+
+**Ambientais:**
+- Tabagismo, alcoolismo, sedentarismo
+- Obesidade, exposicao a quimicos
+- Dieta inadequada, estresse cronico
+
+### Metricas (validacao cruzada)
+
+- **ROC-AUC:** ~0.78
+- **Acuracia:** ~80%
+- **MAE (regressao):** ~0.03
+
+---
+
+## Base de Dados
+
+O dataset e **sintetico**, gerado com parametros baseados na literatura medica:
+
+**Baseado em ciencia real:**
+- Padroes de heranca mendeliana
+- Penetrancias publicadas (ex: BRCA1 ~72%, Huntington ~95%)
+- Compartilhamento genetico real por grau de parentesco
+- Influencia de fatores ambientais segundo evidencias epidemiologicas
+
+**Limitacoes:**
+- Nao utiliza dados reais de pacientes
+- Simplifica interacoes gene-gene e epigenetica
+- Nao considera variantes geneticas especificas
+
+---
+
+## Deploy
+
+O projeto esta configurado para deploy no [Render](https://render.com):
+
+1. Conecte o repositorio no Render
+2. Configure como **Web Service** com Python
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT`
+5. Adicione variavel de ambiente: `PYTHON_VERSION=3.11.9`
+
+---
+
+## Tecnologias
+
+- **Backend:** Python, Flask, scikit-learn, NumPy
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **ML:** Random Forest, Gradient Boosting, Feature Engineering
+- **Deploy:** Gunicorn, Render
+
+---
+
+## Licenca
+
+Este projeto esta sob a licenca MIT.
+
+---
+
+## Disclaimer
+
+Este sistema e uma ferramenta **educacional** desenvolvida para fins de estudo e demonstracao de Machine Learning aplicado a genetica. **Nao possui finalidade diagnostica.** Para avaliacao de risco genetico real, consulte um geneticista clinico e realize testes geneticos especificos.
