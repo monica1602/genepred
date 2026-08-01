@@ -310,6 +310,99 @@ function displayResults(result) {
         recList.appendChild(li);
     });
 
+    // ── Clinical Info ──────────────────────────────────────────────
+
+    const ci = result.clinical_info || {};
+
+    // Urgency card
+    const urgencyCard = document.getElementById('urgency-card');
+    const urgency = ci.urgencia || 'eletiva';
+    urgencyCard.className = `urgency-card urgency-${urgency}`;
+
+    const urgencyIcon = document.getElementById('urgency-icon');
+    urgencyIcon.className = `fas ${ci.urgencia_icone || 'fa-calendar-check'}`;
+
+    document.getElementById('urgency-tag').textContent = urgency.charAt(0).toUpperCase() + urgency.slice(1);
+    document.getElementById('urgency-label').textContent = ci.urgencia_label || '';
+    document.getElementById('urgency-description').textContent = ci.urgencia_descricao || '';
+
+    const urgencyIconWrap = document.getElementById('urgency-icon-wrap');
+    urgencyIconWrap.style.backgroundColor = (ci.urgencia_cor || '#28a745') + '20';
+    urgencyIconWrap.style.color = ci.urgencia_cor || '#28a745';
+    document.getElementById('urgency-tag').style.backgroundColor = (ci.urgencia_cor || '#28a745') + '20';
+    document.getElementById('urgency-tag').style.color = ci.urgencia_cor || '#28a745';
+    document.getElementById('urgency-tag').style.borderColor = ci.urgencia_cor || '#28a745';
+    document.getElementById('urgency-label').style.color = ci.urgencia_cor || '#28a745';
+
+    // Specialists
+    const specialistsGrid = document.getElementById('specialists-grid');
+    specialistsGrid.innerHTML = '';
+    const specialistIcons = {
+        'Cardiologista': 'fa-heart',
+        'Neurologista': 'fa-brain',
+        'Oncologista': 'fa-ribbon',
+        'Geneticista': 'fa-dna',
+        'Hematologista': 'fa-tint',
+        'Reumatologista': 'fa-bone',
+        'Pneumologista': 'fa-lungs',
+        'Endocrinologista': 'fa-pills',
+        'Gastroenterologista': 'fa-stomach',
+        'Hepatologista': 'fa-liver',
+        'Dermatologista': 'fa-allergies',
+        'Oftalmologista': 'fa-eye',
+        'Ortopedista': 'fa-walking',
+        'Psiquiatra': 'fa-head-side-brain',
+        'Neuropediatra': 'fa-child',
+        'Urologista': 'fa-male',
+        'Nefrologista': 'fa-kidneys',
+    };
+
+    const specialists = ci.especialistas || [];
+    if (specialists.length > 0) {
+        specialists.forEach(esp => {
+            const card = document.createElement('div');
+            card.className = 'specialist-chip';
+
+            // Encontrar ícone correspondente
+            let icon = 'fa-user-md';
+            for (const [key, val] of Object.entries(specialistIcons)) {
+                if (esp.toLowerCase().includes(key.toLowerCase())) {
+                    icon = val;
+                    break;
+                }
+            }
+
+            card.innerHTML = `<i class="fas ${icon}"></i><span>${esp}</span>`;
+            specialistsGrid.appendChild(card);
+        });
+    } else {
+        specialistsGrid.innerHTML = '<p class="no-data">Consulte um médico generalista para orientação inicial.</p>';
+    }
+
+    // Exams
+    const examsList = document.getElementById('exams-list');
+    examsList.innerHTML = '';
+    const exams = ci.exames || [];
+    if (exams.length > 0) {
+        exams.forEach(exam => {
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fas fa-flask-vial"></i><span>${exam}</span>`;
+            examsList.appendChild(li);
+        });
+    } else {
+        examsList.innerHTML = '<li><i class="fas fa-info-circle"></i><span>Consulte um especialista para solicitação de exames.</span></li>';
+    }
+
+    // Clinical note
+    const clinicalNote = document.getElementById('clinical-note');
+    const clinicalNoteText = document.getElementById('clinical-note-text');
+    if (ci.nota_clinica) {
+        clinicalNoteText.textContent = ci.nota_clinica;
+        clinicalNote.style.display = 'flex';
+    } else {
+        clinicalNote.style.display = 'none';
+    }
+
     // Mostrar resultados
     resultsSection.style.display = 'block';
 

@@ -526,6 +526,65 @@ DOENCAS = {
         "penetrancia": 0.45,
         "categoria": "psiquiatrica"
     },
+
+    # ================================================================
+    # DOENÇAS RARAS ADICIONAIS (LISOSSÔMICAS, SÍNDROMES GENÉTICAS)
+    # ================================================================
+
+    "fabry": {
+        "nome": "Doença de Fabry",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "pompe": {
+        "nome": "Doença de Pompe (Glicogenose Tipo II)",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "mucopolissacaridose_i": {
+        "nome": "Mucopolissacaridose Tipo I (Hurler/Scheie)",
+        "tipo_heranca": "autossomica_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "rett": {
+        "nome": "Síndrome de Rett",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "noonan": {
+        "nome": "Síndrome de Noonan",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.90,
+        "categoria": "doenca_rara"
+    },
+    "prader_willi": {
+        "nome": "Síndrome de Prader-Willi",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "williams": {
+        "nome": "Síndrome de Williams",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "acondroplasia": {
+        "nome": "Acondroplasia",
+        "tipo_heranca": "autossomica_dominante",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
+    "sindrome_turner": {
+        "nome": "Síndrome de Turner",
+        "tipo_heranca": "ligada_x_recessiva",
+        "penetrancia": 0.99,
+        "categoria": "doenca_rara"
+    },
 }
 
 # ============================================================

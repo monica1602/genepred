@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'data'))
 
 from models.genetic_predictor import GeneticDiseasePredictor
 from data.generate_dataset import DOENCAS, PARENTESCOS
+from data.disease_info import DISEASE_CLINICAL_INFO, get_urgency_level, get_urgency_description
 
 app = Flask(__name__, static_folder='../frontend')
 CORS(app)
@@ -288,6 +289,23 @@ def predict():
             'compartilhamento_genetico': parentesco_info['compartilhamento_genetico'],
         }
 
+        # Adicionar informações clínicas (exames, especialistas, urgência)
+        nivel_risco = resultado['nivel_risco']
+        urgency = get_urgency_level(doenca_id, nivel_risco)
+        urgency_desc = get_urgency_description(urgency)
+
+        clinical = DISEASE_CLINICAL_INFO.get(doenca_id, {})
+        resultado['clinical_info'] = {
+            'exames': clinical.get('exames', []),
+            'especialistas': clinical.get('especialistas', []),
+            'nota_clinica': clinical.get('nota_clinica', ''),
+            'urgencia': urgency,
+            'urgencia_label': urgency_desc['label'],
+            'urgencia_descricao': urgency_desc['descricao'],
+            'urgencia_cor': urgency_desc['cor'],
+            'urgencia_icone': urgency_desc['icone'],
+        }
+
         return jsonify(resultado)
 
     except Exception as e:
@@ -305,6 +323,7 @@ def get_diseases():
             "tipo_heranca": info["tipo_heranca"],
             "categoria": info["categoria"],
             "penetrancia": info["penetrancia"],
+            "tem_info_clinica": doenca_id in DISEASE_CLINICAL_INFO,
         })
 
     # Ordenar por categoria e nome
@@ -372,6 +391,28 @@ def get_inheritance_info():
         }
     }
     return jsonify(info)
+
+
+@app.route('/api/disease-info/<doenca_id>', methods=['GET'])
+def get_disease_clinical_info(doenca_id):
+    """Retorna informações clínicas detalhadas de uma doença."""
+    if doenca_id not in DOENCAS:
+        return jsonify({"error": f"Doença não encontrada: {doenca_id}"}), 404
+
+    doenca_info = DOENCAS[doenca_id]
+    clinical = DISEASE_CLINICAL_INFO.get(doenca_id, {})
+
+    return jsonify({
+        "id": doenca_id,
+        "nome": doenca_info['nome'],
+        "categoria": doenca_info['categoria'],
+        "tipo_heranca": doenca_info['tipo_heranca'],
+        "penetrancia": doenca_info['penetrancia'],
+        "exames": clinical.get('exames', []),
+        "especialistas": clinical.get('especialistas', []),
+        "nota_clinica": clinical.get('nota_clinica', ''),
+        "urgencia_por_risco": clinical.get('urgencia_por_risco', {}),
+    })
 
 
 if __name__ == '__main__':
