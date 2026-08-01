@@ -62,6 +62,7 @@ async function loadDiseases() {
 
         // Event listener para mostrar info da doença
         select.addEventListener('change', showDiseaseInfo);
+        select.addEventListener('change', loadSymptomsForDisease);
 
     } catch (error) {
         console.error('Erro ao carregar doenças:', error);
@@ -152,6 +153,82 @@ function showDiseaseInfo() {
     infoBox.style.display = 'flex';
 }
 
+// ============================================
+// Sintomas Dinâmicos
+// ============================================
+
+let currentSymptoms = [];
+
+async function loadSymptomsForDisease() {
+    const select = document.getElementById('doenca_id');
+    const doencaId = select.value;
+    const fieldset = document.getElementById('symptoms-fieldset');
+    const grid = document.getElementById('symptoms-grid');
+    const loadingEl = document.getElementById('symptoms-loading');
+    const noSymptomsMsg = document.getElementById('no-symptoms-msg');
+    const counter = document.getElementById('symptoms-counter');
+
+    // Limpar seleção anterior
+    currentSymptoms = [];
+    grid.innerHTML = '';
+    counter.style.display = 'none';
+    document.getElementById('symptoms-count').textContent = '0';
+
+    if (!doencaId) {
+        fieldset.style.display = 'none';
+        return;
+    }
+
+    fieldset.style.display = 'block';
+    loadingEl.style.display = 'flex';
+    noSymptomsMsg.style.display = 'none';
+
+    try {
+        const response = await fetch(`${API_BASE}/api/symptoms/${doencaId}`);
+        const data = await response.json();
+        const sintomas = data.sintomas || [];
+
+        loadingEl.style.display = 'none';
+
+        if (sintomas.length === 0) {
+            noSymptomsMsg.style.display = 'flex';
+            return;
+        }
+
+        counter.style.display = 'flex';
+        sintomas.forEach(sintoma => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-item symptom-item';
+            label.innerHTML = `
+                <input type="checkbox" class="symptom-check" value="${sintoma.id}" data-peso="${sintoma.peso}">
+                <span class="checkmark"></span>
+                <span class="checkbox-label">
+                    <i class="fas ${sintoma.icone}"></i> ${sintoma.label}
+                </span>
+            `;
+            grid.appendChild(label);
+        });
+
+        // Atualizar contador ao marcar/desmarcar
+        grid.querySelectorAll('.symptom-check').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = grid.querySelectorAll('.symptom-check:checked').length;
+                document.getElementById('symptoms-count').textContent = checked;
+            });
+        });
+
+    } catch (error) {
+        loadingEl.style.display = 'none';
+        noSymptomsMsg.style.display = 'flex';
+        console.error('Erro ao carregar sintomas:', error);
+    }
+}
+
+function getSelectedSymptoms() {
+    const checks = document.querySelectorAll('.symptom-check:checked');
+    return Array.from(checks).map(cb => cb.value);
+}
+
 function showRelationshipInfo() {
     const select = document.getElementById('parentesco');
     const selectedOption = select.options[select.selectedIndex];
@@ -185,6 +262,9 @@ function setupFormHandlers() {
         document.getElementById('results-section').style.display = 'none';
         document.getElementById('disease-info-box').style.display = 'none';
         document.getElementById('relationship-info-box').style.display = 'none';
+        document.getElementById('symptoms-fieldset').style.display = 'none';
+        document.getElementById('symptoms-grid').innerHTML = '';
+        document.getElementById('symptoms-count').textContent = '0';
     });
 }
 
@@ -223,6 +303,7 @@ async function handleSubmit(event) {
         exposicao_quimicos: document.getElementById('exposicao_quimicos').checked ? 1 : 0,
         dieta_inadequada: document.getElementById('dieta_inadequada').checked ? 1 : 0,
         estresse_cronico: document.getElementById('estresse_cronico').checked ? 1 : 0,
+        sintomas: getSelectedSymptoms(),
     };
 
     try {
@@ -309,6 +390,32 @@ function displayResults(result) {
         li.textContent = rec;
         recList.appendChild(li);
     });
+
+    // ── Sintomas Relatados no resultado ───────────────────────────
+
+    const symptomsResult = document.getElementById('symptoms-result');
+    const symptomsResultGrid = document.getElementById('symptoms-result-grid');
+    const sintomosRelatados = result.sintomas_relatados || [];
+    const sintomasDisponiveis = result.sintomas_disponiveis || [];
+
+    symptomsResultGrid.innerHTML = '';
+
+    if (sintomosRelatados.length > 0) {
+        // Montar mapa id -> label
+        const mapaLabels = {};
+        sintomasDisponiveis.forEach(s => { mapaLabels[s.id] = { label: s.label, icone: s.icone }; });
+
+        sintomosRelatados.forEach(id => {
+            const info = mapaLabels[id] || { label: id, icone: 'fa-circle-dot' };
+            const chip = document.createElement('div');
+            chip.className = 'symptom-result-chip';
+            chip.innerHTML = `<i class="fas ${info.icone}"></i><span>${info.label}</span>`;
+            symptomsResultGrid.appendChild(chip);
+        });
+        symptomsResult.style.display = 'block';
+    } else {
+        symptomsResult.style.display = 'none';
+    }
 
     // ── Clinical Info ──────────────────────────────────────────────
 

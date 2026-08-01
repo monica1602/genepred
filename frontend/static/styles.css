@@ -1001,3 +1001,138 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   Symptoms Section (Form)
+   ============================================ */
+
+.symptoms-fieldset {
+    border-color: #c7d2fe;
+    background: #fafaff;
+    animation: fadeInUp 0.3s ease;
+}
+
+.symptoms-fieldset legend i {
+    color: #4f46e5;
+}
+
+.symptom-item {
+    border-color: #e0e7ff;
+}
+
+.symptom-item:hover {
+    border-color: #4f46e5;
+    background: #eef2ff;
+}
+
+.symptom-item:has(input:checked) {
+    border-color: #4f46e5;
+    background: #eef2ff;
+}
+
+.symptom-item:has(input:checked) .checkbox-label i {
+    color: #4f46e5;
+}
+
+.symptoms-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 0;
+    color: var(--gray-500);
+    font-size: 0.9rem;
+}
+
+.symptoms-loading i {
+    color: #4f46e5;
+}
+
+.no-symptoms-msg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+.no-symptoms-msg i {
+    color: var(--gray-400);
+}
+
+.symptoms-counter {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.825rem;
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.symptoms-counter #symptoms-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: #4f46e5;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* ============================================
+   Symptoms Result Section
+   ============================================ */
+
+.symptoms-result {
+    padding: 20px 24px;
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.symptoms-result h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4f46e5;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.symptoms-result-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.symptom-result-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    background: white;
+    border: 1.5px solid #a5b4fc;
+    border-radius: 20px;
+    font-size: 0.825rem;
+    color: #3730a3;
+    font-weight: 500;
+}
+
+.symptom-result-chip i {
+    color: #4f46e5;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .symptoms-result-grid {
+        flex-direction: column;
+    }
+}

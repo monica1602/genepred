@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'data'))
 from models.genetic_predictor import GeneticDiseasePredictor
 from data.generate_dataset import DOENCAS, PARENTESCOS
 from data.disease_info import DISEASE_CLINICAL_INFO, get_urgency_level, get_urgency_description
+from data.symptoms_data import get_disease_symptoms, calcular_ajuste_sintomas
 
 app = Flask(__name__, static_folder='../frontend')
 CORS(app)
@@ -276,6 +277,34 @@ def predict():
         model = get_predictor()
         resultado = model.predict(dados_predicao)
 
+        # Ajuste de probabilidade por sintomas relatados
+        sintomas_presentes = data.get('sintomas', [])
+        if sintomas_presentes:
+            fator_sintomas = calcular_ajuste_sintomas(doenca_id, sintomas_presentes)
+            prob_ajustada = min(resultado['probabilidade'] * fator_sintomas, 99.0)
+            resultado['probabilidade'] = round(prob_ajustada, 2)
+
+            # Reclassificar nível de risco com nova probabilidade
+            prob_frac = prob_ajustada / 100.0
+            if prob_frac < 0.10:
+                resultado['nivel_risco'] = "Muito Baixo"
+                resultado['cor_risco'] = "#28a745"
+            elif prob_frac < 0.25:
+                resultado['nivel_risco'] = "Baixo"
+                resultado['cor_risco'] = "#7bc67e"
+            elif prob_frac < 0.45:
+                resultado['nivel_risco'] = "Moderado"
+                resultado['cor_risco'] = "#ffc107"
+            elif prob_frac < 0.65:
+                resultado['nivel_risco'] = "Alto"
+                resultado['cor_risco'] = "#fd7e14"
+            else:
+                resultado['nivel_risco'] = "Muito Alto"
+                resultado['cor_risco'] = "#dc3545"
+
+        resultado['sintomas_relatados'] = sintomas_presentes
+        resultado['sintomas_disponiveis'] = get_disease_symptoms(doenca_id)
+
         # Adicionar informações contextuais
         resultado['doenca_info'] = {
             'nome': doenca_info['nome'],
@@ -317,6 +346,7 @@ def get_diseases():
     """Retorna lista de doenças disponíveis."""
     doencas_lista = []
     for doenca_id, info in DOENCAS.items():
+        sintomas = get_disease_symptoms(doenca_id)
         doencas_lista.append({
             "id": doenca_id,
             "nome": info["nome"],
@@ -324,6 +354,7 @@ def get_diseases():
             "categoria": info["categoria"],
             "penetrancia": info["penetrancia"],
             "tem_info_clinica": doenca_id in DISEASE_CLINICAL_INFO,
+            "num_sintomas": len(sintomas),
         })
 
     # Ordenar por categoria e nome
@@ -391,6 +422,13 @@ def get_inheritance_info():
         }
     }
     return jsonify(info)
+
+
+@app.route('/api/symptoms/<doenca_id>', methods=['GET'])
+def get_symptoms(doenca_id):
+    """Retorna lista de sintomas de uma doença para o frontend."""
+    sintomas = get_disease_symptoms(doenca_id)
+    return jsonify({"doenca_id": doenca_id, "sintomas": sintomas})
 
 
 @app.route('/api/disease-info/<doenca_id>', methods=['GET'])

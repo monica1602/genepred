@@ -104,6 +104,26 @@
                     </div>
                 </fieldset>
 
+                <!-- Seção: Sintomas do Paciente Avaliado -->
+                <fieldset class="form-group symptoms-fieldset" id="symptoms-fieldset" style="display:none;">
+                    <legend><i class="fas fa-stethoscope"></i> Sintomas do Paciente a ser Avaliado</legend>
+                    <p class="field-description">
+                        Selecione os sintomas que o paciente apresenta atualmente.
+                        Sintomas presentes <strong>aumentam</strong> a probabilidade calculada.
+                    </p>
+                    <div id="symptoms-loading" class="symptoms-loading" style="display:none;">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando sintomas...
+                    </div>
+                    <div class="checkbox-grid" id="symptoms-grid"></div>
+                    <div id="no-symptoms-msg" class="no-symptoms-msg" style="display:none;">
+                        <i class="fas fa-info-circle"></i>
+                        Nenhum sintoma específico cadastrado para esta doença.
+                    </div>
+                    <div class="symptoms-counter" id="symptoms-counter" style="display:none;">
+                        <span id="symptoms-count">0</span> sintoma(s) selecionado(s)
+                    </div>
+                </fieldset>
+
                 <!-- Seção: Fatores de Risco -->
                 <fieldset class="form-group">
                     <legend><i class="fas fa-heartbeat"></i> Fatores de Risco e Estilo de Vida</legend>
@@ -247,6 +267,12 @@
                         <span class="tech-value" id="tech-penetrance">-</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Sintomas Relatados no Resultado -->
+            <div class="symptoms-result" id="symptoms-result" style="display:none;">
+                <h3><i class="fas fa-stethoscope"></i> Sintomas Relatados</h3>
+                <div class="symptoms-result-grid" id="symptoms-result-grid"></div>
             </div>
 
             <!-- Urgência -->
